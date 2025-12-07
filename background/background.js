@@ -585,6 +585,11 @@ function init() {
     window.addEventListener('wheel', onMouseWheel);
     window.addEventListener('mousedown', onMousePressed);
     window.addEventListener('themeChange', onThemeChange);
+    
+    // Mobile touch events
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
 }
 
 function onThemeChange(event) {
@@ -664,6 +669,33 @@ function onMouseWheel(event) {
 
 function onMousePressed() {
     moveFrames = 60;
+}
+
+// Touch event handling for mobile
+let lastTouchY = null;
+
+function onTouchStart(event) {
+    lastTouchY = event.touches[0].clientY;
+}
+
+function onTouchMove(event) {
+    if (lastTouchY !== null) {
+        const currentTouchY = event.touches[0].clientY;
+        const deltaY = lastTouchY - currentTouchY;
+        
+        // Trigger movement and rotation similar to mouse wheel
+        moveFrames = 1;
+        dir = deltaY > 0 ? 1 : -1;
+        
+        // Add rotation impulse on scroll - scale deltaY to match wheel sensitivity
+        scrollRotationSpeed += dir * Math.min(Math.abs(deltaY) * 0.02, 0.8);
+        
+        lastTouchY = currentTouchY;
+    }
+}
+
+function onTouchEnd() {
+    lastTouchY = null;
 }
 
 function animate() {
