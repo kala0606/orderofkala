@@ -1,5 +1,15 @@
 /* Squared Page Specific Styles */
 
+/* Allow wheel events to pass through to background */
+.main-content {
+    pointer-events: none;
+}
+
+/* Re-enable pointer events for interactive elements */
+.main-content * {
+    pointer-events: auto;
+}
+
 /* Header */
 .squared-header {
     padding: 30px 60px;
