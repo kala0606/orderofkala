@@ -687,15 +687,15 @@ body.light-mode .moon-icon {
 /* Secondary Release */
 .secondary-release {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 50px;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
     margin-bottom: 60px;
     background: var(--card-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--card-border);
     border-radius: 20px;
-    padding: 40px;
+    padding: 50px;
     transition: all 0.3s ease;
 }
 
@@ -714,7 +714,6 @@ body.light-mode .moon-icon {
 .secondary-release-visual .visual-placeholder {
     width: 100%;
     aspect-ratio: 1;
-    max-width: 250px;
 }
 
 .squared-preview {
@@ -738,17 +737,17 @@ body.light-mode .moon-icon {
 }
 
 .secondary-release-title {
-    font-size: 28px;
+    font-size: 36px;
     font-weight: 800;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     line-height: 1.2;
 }
 
 .secondary-release-description {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.6;
     opacity: 0.9;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .secondary-release-actions {
@@ -837,8 +836,8 @@ body.light-mode .moon-icon {
     
     .secondary-release {
         grid-template-columns: 1fr;
-        gap: 30px;
-        padding: 35px;
+        gap: 40px;
+        padding: 40px;
     }
     
     .secondary-release-visual {
@@ -883,16 +882,16 @@ body.light-mode .moon-icon {
     }
     
     .secondary-release {
-        padding: 25px;
-        gap: 25px;
+        padding: 30px;
+        gap: 40px;
     }
     
     .secondary-release-title {
-        font-size: 24px;
+        font-size: 28px;
     }
     
     .secondary-release-description {
-        font-size: 15px;
+        font-size: 16px;
     }
     
     .secondary-release-actions {
@@ -920,20 +919,21 @@ body.light-mode .moon-icon {
     }
     
     .secondary-release {
-        padding: 20px;
-        gap: 20px;
+        padding: 25px;
+        gap: 30px;
     }
     
     .secondary-release-title {
-        font-size: 22px;
+        font-size: 24px;
     }
     
     .secondary-release-description {
-        font-size: 14px;
+        font-size: 16px;
     }
     
     .secondary-release-visual .visual-placeholder {
-        max-width: 150px;
+        max-width: 400px;
+        margin: 0 auto;
     }
 }
 
