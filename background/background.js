@@ -582,7 +582,8 @@ function init() {
 
     // Event listeners
     window.addEventListener('resize', onWindowResize);
-    window.addEventListener('wheel', onMouseWheel);
+    window.addEventListener('wheel', onMouseWheel, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('mousedown', onMousePressed);
     window.addEventListener('themeChange', onThemeChange);
     
@@ -667,28 +668,64 @@ function onMouseWheel(event) {
     scrollRotationSpeed += dir * 0.8; // Temporary speed boost
 }
 
+// Alternative scroll handler for some mobile browsers
+let lastScrollY = window.scrollY || window.pageYOffset;
+let scrollLastUpdate = 0;
+
+function onScroll() {
+    const now = Date.now();
+    // Throttle to max 60fps for performance
+    if (now - scrollLastUpdate < 16) return;
+    scrollLastUpdate = now;
+    
+    const currentScrollY = window.scrollY || window.pageYOffset;
+    const deltaY = currentScrollY - lastScrollY;
+    
+    if (Math.abs(deltaY) > 1) {
+        moveFrames = 1;
+        dir = deltaY > 0 ? 1 : -1;
+        const intensity = Math.min(Math.abs(deltaY) * 0.02, 0.5);
+        scrollRotationSpeed += dir * intensity;
+    }
+    
+    lastScrollY = currentScrollY;
+}
+
 function onMousePressed() {
     moveFrames = 60;
 }
 
 // Touch event handling for mobile
 let lastTouchY = null;
+let touchLastUpdate = 0;
 
 function onTouchStart(event) {
-    lastTouchY = event.touches[0].clientY;
+    if (event.touches.length === 1) {
+        lastTouchY = event.touches[0].clientY;
+        touchLastUpdate = Date.now();
+    }
 }
 
 function onTouchMove(event) {
-    if (lastTouchY !== null) {
+    if (lastTouchY !== null && event.touches.length === 1) {
+        const now = Date.now();
+        // Throttle to max 60fps for performance
+        if (now - touchLastUpdate < 16) return;
+        touchLastUpdate = now;
+        
         const currentTouchY = event.touches[0].clientY;
         const deltaY = lastTouchY - currentTouchY;
         
-        // Trigger movement and rotation similar to mouse wheel
-        moveFrames = 1;
-        dir = deltaY > 0 ? 1 : -1;
-        
-        // Add rotation impulse on scroll - scale deltaY to match wheel sensitivity
-        scrollRotationSpeed += dir * Math.min(Math.abs(deltaY) * 0.02, 0.8);
+        // Only process if there's meaningful movement
+        if (Math.abs(deltaY) > 2) {
+            // Trigger movement and rotation similar to mouse wheel
+            moveFrames = 1;
+            dir = deltaY > 0 ? 1 : -1;
+            
+            // Add rotation impulse on scroll
+            const intensity = Math.min(Math.abs(deltaY) * 0.02, 0.6);
+            scrollRotationSpeed += dir * intensity;
+        }
         
         lastTouchY = currentTouchY;
     }
