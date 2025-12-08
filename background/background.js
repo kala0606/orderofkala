@@ -158,8 +158,11 @@ class Boid {
             metalness: 0.3
         });
         this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.castShadow = true;
-        this.mesh.receiveShadow = true;
+        // Disable shadows on mobile for better performance
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+            || (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+        this.mesh.castShadow = !isMobile;
+        this.mesh.receiveShadow = !isMobile;
     }
 
     edges() {
@@ -357,6 +360,11 @@ const HEIGHT = window.innerHeight;
 const DIM = Math.min(WIDTH, HEIGHT);
 const M = WIDTH > HEIGHT ? DIM / 1000 : DIM / 500;
 
+// Mobile detection
+const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+    || (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+const isLowEnd = isMobile || navigator.hardwareConcurrency <= 4;
+
 function init() {
     // Scene
     scene = new THREE.Scene();
@@ -377,15 +385,16 @@ function init() {
     camera.position.set(WIDTH / 2, HEIGHT / 2, 800);
     camera.lookAt(WIDTH / 2, HEIGHT / 2, 0);
 
-    // Renderer
+    // Renderer - optimized for mobile
     renderer = new THREE.WebGLRenderer({ 
-        antialias: true,
+        antialias: !isMobile, // Disable antialiasing on mobile for better performance
         powerPreference: "high-performance"
     });
     renderer.setSize(WIDTH, HEIGHT);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.VSMShadowMap; // Better quality shadows
+    // Lower pixel ratio on mobile for better performance
+    renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = !isMobile; // Disable shadows on mobile
+    renderer.shadowMap.type = isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap; // Use cheaper shadow type
     
     // Try to append to background-container, fallback to canvas-container
     const container = document.getElementById('background-container') || document.getElementById('canvas-container');
@@ -405,17 +414,19 @@ function init() {
     window.directionalLight1 = new THREE.DirectionalLight(0xddeeff, 0.1);
     window.directionalLight1.position.set(WIDTH / 2, HEIGHT / 2 - 400, 900);
     window.directionalLight1.target.position.set(WIDTH / 2, HEIGHT / 2, 100);
-    window.directionalLight1.castShadow = true;
-    window.directionalLight1.shadow.mapSize.width = 8192; // Higher resolution
-    window.directionalLight1.shadow.mapSize.height = 8192;
+    window.directionalLight1.castShadow = !isMobile; // Disable shadow casting on mobile
+    // Mobile-optimized shadow settings
+    const shadowMapSize = isMobile ? 512 : 2048; // Much lower resolution for mobile
+    window.directionalLight1.shadow.mapSize.width = shadowMapSize;
+    window.directionalLight1.shadow.mapSize.height = shadowMapSize;
     window.directionalLight1.shadow.camera.left = -WIDTH * 2;
     window.directionalLight1.shadow.camera.right = WIDTH * 2;
     window.directionalLight1.shadow.camera.top = HEIGHT * 2;
     window.directionalLight1.shadow.camera.bottom = -HEIGHT * 2;
     window.directionalLight1.shadow.camera.near = 1;
     window.directionalLight1.shadow.camera.far = 3000;
-    window.directionalLight1.shadow.radius = 25; // Softer, more blurred shadows
-    window.directionalLight1.shadow.bias = -0.0008; // Adjusted for better shadow quality
+    window.directionalLight1.shadow.radius = isMobile ? 3 : 15; // Lower blur on mobile
+    window.directionalLight1.shadow.bias = -0.0008;
     window.directionalLight1.shadow.normalBias = 0.015;
     scene.add(window.directionalLight1);
     scene.add(window.directionalLight1.target);
@@ -433,8 +444,8 @@ function init() {
         metalness: 0.1
     });
     const plane = new THREE.Mesh(planeGeometry, window.planeMaterial);
-    plane.position.set(WIDTH / 2, HEIGHT / 2, -1000);
-    plane.receiveShadow = true;
+    plane.position.set(WIDTH / 2, HEIGHT / 2, -500);
+    plane.receiveShadow = !isMobile; // Disable shadow receiving on mobile
     scene.add(plane);
 
     // Create logo shadow caster from SVG shapes
@@ -468,7 +479,7 @@ function init() {
                 });
                 
                 const mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = false; // Disabled logo shadow
+                mesh.castShadow = false; // Logo shadows disabled
                 mesh.receiveShadow = false;
                 mesh.rotation.x = Math.PI;
                 mesh.scale.set(0.8, 0.8, 0.8);
@@ -547,8 +558,9 @@ function init() {
         };
     }
 
-    // Create boids with collision detection
-    for (let i = 0; i < 10; i++) {
+    // Create boids with collision detection - fewer on mobile for performance
+    const boidCount = isMobile ? 5 : 10; // Reduce cube count on mobile
+    for (let i = 0; i < boidCount; i++) {
         // Pre-calculate size to check for overlaps before creating the boid
         const size = Math.random() > 0.8 ? (Math.random() * 150 + 150) * M : (Math.random() * 30 + 190) * M;
         
@@ -619,14 +631,14 @@ function onThemeChange(event) {
             // Brighter lights for light mode with softer shadows
             window.directionalLight1.color = new THREE.Color(0xffffff);
             window.directionalLight1.intensity = 1.5;
-            window.directionalLight1.shadow.radius = 25; // Softer shadows
+            window.directionalLight1.shadow.radius = isMobile ? 3 : 15; // Lower radius on mobile
             window.directionalLight2.color = new THREE.Color(0xffffff); // Pure white instead of tinted
             window.directionalLight2.intensity = 0.5;
         } else {
             // Cooler lights for dark mode with softer shadows
             window.directionalLight1.color = new THREE.Color(0xddeeff);
             window.directionalLight1.intensity = 3.5;
-            window.directionalLight1.shadow.radius = 75; // Softer shadows
+            window.directionalLight1.shadow.radius = isMobile ? 5 : 25; // Lower radius on mobile
             window.directionalLight2.color = new THREE.Color(0xffddee);
             window.directionalLight2.intensity = 0.8;
         }
