@@ -468,7 +468,7 @@ function init() {
                 });
                 
                 const mesh = new THREE.Mesh(geometry, material);
-                mesh.castShadow = true;
+                mesh.castShadow = false; // Disabled logo shadow
                 mesh.receiveShadow = false;
                 mesh.rotation.x = Math.PI;
                 mesh.scale.set(0.8, 0.8, 0.8);
