@@ -22,7 +22,7 @@ function initSquared() {
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.BasicShadowMap; // Much faster than PCFSoftShadowMap
   container.appendChild(renderer.domElement);
 
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -78,8 +78,8 @@ function initSquared() {
   const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
   mainLight.position.set(100, 150, 100);
   mainLight.castShadow = true;
-  mainLight.shadow.mapSize.width = 2048;
-  mainLight.shadow.mapSize.height = 2048;
+  mainLight.shadow.mapSize.width = 1024; // Reduced from 2048 for better performance
+  mainLight.shadow.mapSize.height = 1024; // Reduced from 2048 for better performance
   mainLight.shadow.camera.left = -200;
   mainLight.shadow.camera.right = 200;
   mainLight.shadow.camera.top = 200;
@@ -382,7 +382,7 @@ function initSquared() {
       iSet = Math.floor(Math.random() * 5 + 5);
       iPlus = Math.floor(Math.random() * 5 + 5);
       // Randomize balance threshold (-0.8 to 0.8)
-      lightDarkThreshold = (Math.random() * 1.6) - 0.8;
+      lightDarkThreshold = (Math.random() * 0.6) - 0.3;
       // Also randomize the noise seed
       for (let i = 0; i < 256; i++) {
         const j = Math.floor(Math.random() * 256);
