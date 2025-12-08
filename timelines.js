@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeControls();
     initializeTimeDisplay();
     initializeHeaderThemeToggle();
+    initializeScrollArrow();
     
     // Wait for p5 to be ready
     setTimeout(() => {
@@ -25,6 +26,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 1000);
 });
+
+// Initialize scroll down arrow
+function initializeScrollArrow() {
+    const scrollArrow = document.getElementById('scroll-down-arrow');
+    if (scrollArrow) {
+        scrollArrow.addEventListener('click', () => {
+            const controlPanel = document.getElementById('control-panel');
+            if (controlPanel) {
+                controlPanel.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+        
+        // Hide arrow when user scrolls down
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                scrollArrow.style.opacity = '0';
+                scrollArrow.style.pointerEvents = 'none';
+            } else {
+                scrollArrow.style.opacity = '0.8';
+                scrollArrow.style.pointerEvents = 'auto';
+            }
+        });
+    }
+}
 
 // Initialize header theme toggle
 function initializeHeaderThemeToggle() {

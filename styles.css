@@ -735,6 +735,13 @@ body.light-mode .moon-icon {
     opacity: 0.6;
 }
 
+.squared-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
 .secondary-release-content {
     display: flex;
     flex-direction: column;

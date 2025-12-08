@@ -548,9 +548,9 @@ function init() {
     }
 
     // Create boids with collision detection
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 10; i++) {
         // Pre-calculate size to check for overlaps before creating the boid
-        const size = Math.random() > 0.8 ? (Math.random() * 150 + 350) * M : (Math.random() * 30 + 190) * M;
+        const size = Math.random() > 0.8 ? (Math.random() * 150 + 150) * M : (Math.random() * 30 + 190) * M;
         
         // Find a valid position that doesn't overlap with existing boids
         const position = findValidPosition(size, boids);
