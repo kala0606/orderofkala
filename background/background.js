@@ -395,8 +395,8 @@ function init() {
 
     // Lighting - setup with subtle blue and pink tints
     // Adjust ambient light based on theme for better shadow visibility
-    // Lower ambient light to make shadows more pronounced
-    const ambientIntensity = currentTheme === 'light' ? 0.6 : 0.15;
+    // Higher ambient light to make shadows softer and less harsh
+    const ambientIntensity = currentTheme === 'light' ? 0.85 : 0.4;
     window.ambientLight = new THREE.AmbientLight(0xffffff, ambientIntensity);
     scene.add(window.ambientLight);
 
@@ -426,14 +426,14 @@ function init() {
     scene.add(window.directionalLight2);
 
     // Create background plane to receive shadows (stored globally for theme changes)
-    const planeGeometry = new THREE.PlaneGeometry(WIDTH * 2, HEIGHT * 2);
+    const planeGeometry = new THREE.PlaneGeometry(WIDTH * 3, HEIGHT * 2);
     window.planeMaterial = new THREE.MeshStandardMaterial({ 
         color: currentTheme === 'light' ? 0xffffff : 0x000000,
         roughness: 0.9,
         metalness: 0.1
     });
     const plane = new THREE.Mesh(planeGeometry, window.planeMaterial);
-    plane.position.set(WIDTH / 2, HEIGHT / 2, -10);
+    plane.position.set(WIDTH / 2, HEIGHT / 2, -1000);
     plane.receiveShadow = true;
     scene.add(plane);
 
@@ -607,9 +607,9 @@ function onThemeChange(event) {
         window.planeMaterial.color = new THREE.Color(theme === 'light' ? 0xffffff : 0x000000);
     }
     
-    // Update ambient light (lower to make shadows more pronounced)
+    // Update ambient light (higher to make shadows softer)
     if (window.ambientLight) {
-        window.ambientLight.intensity = theme === 'light' ? 0.9 : 0.15;
+        window.ambientLight.intensity = theme === 'light' ? 0.85 : 0.4;
         window.ambientLight.color = new THREE.Color(theme === 'light' ? 0xffffff : 0xffffff);
     }
     
@@ -626,7 +626,7 @@ function onThemeChange(event) {
             // Cooler lights for dark mode with softer shadows
             window.directionalLight1.color = new THREE.Color(0xddeeff);
             window.directionalLight1.intensity = 3.5;
-            window.directionalLight1.shadow.radius = 25; // Softer shadows
+            window.directionalLight1.shadow.radius = 75; // Softer shadows
             window.directionalLight2.color = new THREE.Color(0xffddee);
             window.directionalLight2.intensity = 0.8;
         }
