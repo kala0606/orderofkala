@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
 import { Brush, Evaluator, SUBTRACTION, INTERSECTION, ADDITION } from 'three-bvh-csg';
 
 // Wait for DOM to be ready
@@ -367,8 +368,12 @@ function initSquared() {
       // Enable download buttons
       const downloadLight = document.getElementById('downloadLight');
       const downloadDark = document.getElementById('downloadDark');
+      const downloadLightOBJ = document.getElementById('downloadLightOBJ');
+      const downloadDarkOBJ = document.getElementById('downloadDarkOBJ');
       if (downloadLight) downloadLight.disabled = false;
       if (downloadDark) downloadDark.disabled = false;
+      if (downloadLightOBJ) downloadLightOBJ.disabled = false;
+      if (downloadDarkOBJ) downloadDarkOBJ.disabled = false;
       
       hideLoading();
       console.log('Sculpture complete!');
@@ -428,6 +433,34 @@ function initSquared() {
       const link = document.createElement('a');
       link.href = url;
       link.download = 'squared_dark_pieces.stl';
+      link.click();
+      URL.revokeObjectURL(url);
+    },
+    
+    downloadLightOBJ: function() {
+      if (!lightMergedBrush) return;
+      
+      const exporter = new OBJExporter();
+      const obj = exporter.parse(lightMergedBrush);
+      const blob = new Blob([obj], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'squared_light_pieces.obj';
+      link.click();
+      URL.revokeObjectURL(url);
+    },
+    
+    downloadDarkOBJ: function() {
+      if (!darkMergedBrush) return;
+      
+      const exporter = new OBJExporter();
+      const obj = exporter.parse(darkMergedBrush);
+      const blob = new Blob([obj], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'squared_dark_pieces.obj';
       link.click();
       URL.revokeObjectURL(url);
     },

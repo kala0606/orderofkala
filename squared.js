@@ -106,7 +106,7 @@ function initializeControls() {
         });
     }
     
-    // Download Light button
+    // Download Light button (STL)
     const downloadLightBtn = document.getElementById('downloadLight');
     if (downloadLightBtn) {
         downloadLightBtn.addEventListener('click', () => {
@@ -116,12 +116,32 @@ function initializeControls() {
         });
     }
     
-    // Download Dark button
+    // Download Dark button (STL)
     const downloadDarkBtn = document.getElementById('downloadDark');
     if (downloadDarkBtn) {
         downloadDarkBtn.addEventListener('click', () => {
             if (window.squaredAPI) {
                 window.squaredAPI.downloadDark();
+            }
+        });
+    }
+    
+    // Download Light button (OBJ)
+    const downloadLightOBJBtn = document.getElementById('downloadLightOBJ');
+    if (downloadLightOBJBtn) {
+        downloadLightOBJBtn.addEventListener('click', () => {
+            if (window.squaredAPI) {
+                window.squaredAPI.downloadLightOBJ();
+            }
+        });
+    }
+    
+    // Download Dark button (OBJ)
+    const downloadDarkOBJBtn = document.getElementById('downloadDarkOBJ');
+    if (downloadDarkOBJBtn) {
+        downloadDarkOBJBtn.addEventListener('click', () => {
+            if (window.squaredAPI) {
+                window.squaredAPI.downloadDarkOBJ();
             }
         });
     }
